@@ -3,6 +3,8 @@ package com.rakov.saldo.serviceimpl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import com.rakov.saldo.dao.LemgramDAO;
 import com.rakov.saldo.daoimpl.LemgramDaoImpl;
@@ -24,9 +26,10 @@ public class SaldoServiceImpl implements SaldoService {
 	private LemgramDAO lemDAO = new LemgramDaoImpl();
 /*
  * 
-    RE_WORD = re.compile(
-        ur'([a-zA-ZГҐГ¤Г¶Г©ГјГ…Г„Г–Г‰Гњ0-9]+-)*[a-zA-ZГҐГ¤Г¶Г©ГјГ…Г„Г–Г‰Гњ]+(:[a-zA-Z]+)?$')
+      RE_WORD = re.compile(
+        ur'([a-zA-ZåäöéüÅÄÖÉÜ0-9]+-)*[a-zA-ZåäöéüÅÄÖÉÜ]+(:[a-zA-Z]+)?$')
     RE_DASH = re.compile(ur'-+')
+
 
     def split(self, word, pos):
         is_not_word = Splitter.RE_WORD.match(word) is None
@@ -45,9 +48,48 @@ public class SaldoServiceImpl implements SaldoService {
             return self.analyze(word, pos)
         else: return None
 */
+	 Pattern reWord = Pattern.compile("([a-zA-ZåäöéüÅÄÖÉÜ0-9]+-)*[a-zA-ZåäöéüÅÄÖÉÜ]+(:[a-zA-Z]+)?$");
+	 Pattern reDash=Pattern.compile("-+");
 	@Override
-	public String split(String word, String pos) {
-		// TODO Auto-generated method stub
+	public String[]  split(String word, String pos) {
+		boolean isNotWord=reWord.matcher(word).matches();
+		String parts []= reDash.split(word);
+		if(parts.length>=max_parts)
+		{
+			return null;
+		}
+		else{
+			if(parts.length>=2){
+				if(this.hasSuffix(parts[0], pos))
+				{//TODO: ask   if u"" in parts: return None
+					return parts;
+				}
+				if(isNotWord){
+					return null;
+				}
+				List<String> segs= new ArrayList<String>();
+				segs=this.analyze(word, pos, false);
+				if(segs==null)
+				{
+					return null;
+				}
+				if(segs.isEmpty())
+				{
+					return null;
+				}
+				//TODO: ask  else: return [parts[:-1] + seg for seg in segs]
+			}
+			if(parts.length==1)
+			{
+				if(isNotWord){
+					return null;
+				}
+				return (String[]) this.analyze(word, pos, false).toArray();
+			}
+			else{
+				return null;
+			}
+		}
 		return null;
 	}
 
@@ -180,10 +222,10 @@ public class SaldoServiceImpl implements SaldoService {
         found = []
         Splitter.combine(found, ends_at, j, [], len_at[j])
         return found*/
-	private List<Lemgram> analyze(String word, String pos,boolean initial)
+	private List<String> analyze(String word, String pos,boolean initial)
 	{
 		StringBuffer analyzeBuf= new StringBuffer();
-		HashMap<Integer,ServiceSupportModel> endsAt=new HashMap<Integer,ServiceSupportModel>();
+		HashMap<Integer,ArrayList<ServiceSupportModel>> endsAt=new HashMap<Integer,ArrayList<ServiceSupportModel>>();
 		int []lenAt= new int[word.length()+1];
 		for(int k=0;k<lenAt.length;k++)
 		{
@@ -199,7 +241,18 @@ public class SaldoServiceImpl implements SaldoService {
 				mod.setI(0);
 				mod.setJ(i);
 				mod.setSeg(seg);
-				endsAt.put(i,mod);
+				if(endsAt.containsKey(i))
+				{
+					ArrayList<ServiceSupportModel> temp=endsAt.get(i);
+					temp.add(mod);
+					endsAt.put(i,temp);	
+				}
+				else{
+					ArrayList<ServiceSupportModel> temp=new ArrayList<ServiceSupportModel>();
+					temp.add(mod);
+					endsAt.put(i,temp);	
+				}
+				
 				lenAt[i]=1;
 			}
 			for (int j=min_seg;j<i-min_seg;j++)
@@ -213,7 +266,17 @@ public class SaldoServiceImpl implements SaldoService {
 						mod1.setI(j);
 						mod1.setJ(i);
 						mod1.setSeg(seg);
-						endsAt.put(i, mod1);
+						if(endsAt.containsKey(i))
+						{
+							ArrayList<ServiceSupportModel> temp=endsAt.get(i);
+							temp.add(mod1);
+							endsAt.put(i,temp);	
+						}
+						else{
+							ArrayList<ServiceSupportModel> temp=new ArrayList<ServiceSupportModel>();
+							temp.add(mod1);
+							endsAt.put(i,temp);	
+						}
 						if(lenAt[i]==-1||lenAt[i]>1+lenAt[j])
 						{
 							lenAt[i]=1+lenAt[j];
@@ -228,7 +291,17 @@ public class SaldoServiceImpl implements SaldoService {
 							mod1.setI(j);
 							mod1.setJ(i);
 							mod1.setSeg(seg);
-							endsAt.put(i, mod1);
+							if(endsAt.containsKey(i))
+							{
+								ArrayList<ServiceSupportModel> temp=endsAt.get(i);
+								temp.add(mod1);
+								endsAt.put(i,temp);	
+							}
+							else{
+								ArrayList<ServiceSupportModel> temp=new ArrayList<ServiceSupportModel>();
+								temp.add(mod1);
+								endsAt.put(i,temp);	
+							}
 							if(lenAt[i]==-1||lenAt[i]>1+lenAt[j])
 							{
 								lenAt[i]=1+lenAt[j];
@@ -253,7 +326,17 @@ public class SaldoServiceImpl implements SaldoService {
 					mod1.setI(i);
 					mod1.setJ(j);
 					mod1.setSeg(seg);
-					endsAt.put(j, mod1);
+					if(endsAt.containsKey(j))
+					{
+						ArrayList<ServiceSupportModel> temp=endsAt.get(i);
+						temp.add(mod1);
+						endsAt.put(j,temp);	
+					}
+					else{
+						ArrayList<ServiceSupportModel> temp=new ArrayList<ServiceSupportModel>();
+						temp.add(mod1);
+						endsAt.put(j,temp);	
+					}
 					if(lenAt[j]==-1||lenAt[j]>1+lenAt[i])
 					{
 						lenAt[j]=1+lenAt[i];
@@ -268,7 +351,17 @@ public class SaldoServiceImpl implements SaldoService {
 						mod1.setI(i);
 						mod1.setJ(j);
 						mod1.setSeg(seg);
-						endsAt.put(j, mod1);
+						if(endsAt.containsKey(j))
+						{
+							ArrayList<ServiceSupportModel> temp=endsAt.get(i);
+							temp.add(mod1);
+							endsAt.put(j,temp);	
+						}
+						else{
+							ArrayList<ServiceSupportModel> temp=new ArrayList<ServiceSupportModel>();
+							temp.add(mod1);
+							endsAt.put(j,temp);	
+						}
 						if(lenAt[j]==-1||lenAt[j]>1+lenAt[i])
 						{
 							lenAt[j]=1+lenAt[i];
@@ -278,7 +371,18 @@ public class SaldoServiceImpl implements SaldoService {
 
 			}
 		}
+		if(!endsAt.containsKey(j))
+		{
+			return null;
+		}
+		if(lenAt[j]>4)
+		{
 		return null;
+		}
+		List<String> strBuf= new ArrayList<String>();
+		SaldoServiceImpl.combine(strBuf, j, endsAt, lenAt[j], "");
+		return strBuf;
+		
 		
 	}
 	/*
@@ -294,18 +398,21 @@ Splitter.combine(found, ends_at, j, [], len_at[j])
                 Splitter.combine(found, ends_at, i, [seg]+history, depth-1)
 
 */
-	private static void combine(StringBuffer strBuf,int j, HashMap<Integer,ServiceSupportModel> endsAt1, int lenAtJ, String history)
+	private static void combine(List<String> strBuf,int j, HashMap<Integer, ArrayList<ServiceSupportModel>> endsAt1, int lenAtJ, String history)
 	{ 
-		
-		for(int i=0;i<e) //TODO ask for i,_,seg in ends_at[j]
+		if(lenAtJ<=0)
+		{
+			return;
+		}
+		for(int i=0;i<endsAt1.get(j).size();i++) //TODO ask for i,_,seg in ends_at[j]
 		{ 
-			if(i==0)
+			if(endsAt1.get(j).get(i).getJ()==0)
 			{
-				strBuf.append(endsAt1.get(j).getSeg()+history);
+				strBuf.add(endsAt1.get(j).get(i).getSeg()+history);
 			}
 			else
 			{
-				combine(strBuf,i,endsAt1,lenAtJ-1,endsAt1.get(j).getSeg()+history);
+				combine(strBuf,endsAt1.get(j).get(i).getJ(),endsAt1,lenAtJ-1,endsAt1.get(j).get(i).getSeg()+history);
 			}
 			
 		}
