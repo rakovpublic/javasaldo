@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.rakov.saldo.dao.LemgramDAO;
 import com.rakov.saldo.model.Lemgram;
+import com.rakov.saldo.mongodbutils.MongoDBUtils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -14,25 +15,8 @@ import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 
 public class LemgramDaoImpl implements LemgramDAO {
-	private static DBCollection lemgramCollection;
-	static {
-		Mongo mongo;
-		try {
-			mongo = new Mongo();
+	private static DBCollection lemgramCollection= MongoDBUtils.getDBCollection();
 
-			DB db = mongo.getDB("lemgramsDB");
-			lemgramCollection = db.getCollection("lemgrams");
-			if (lemgramCollection == null) {
-				lemgramCollection = db.createCollection("lemgrams", null);
-				// note add import data from xml
-			}
-
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
 
 	@Override
 	public List<Lemgram> getLemgramByName(String lemgram1) {

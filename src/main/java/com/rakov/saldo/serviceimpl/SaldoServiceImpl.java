@@ -90,7 +90,7 @@ public class SaldoServiceImpl implements SaldoService {
 				return null;
 			}
 		}
-		return null;
+		//return null;
 	}
 
 	private boolean hasPrefix(String prefix, boolean initial) {

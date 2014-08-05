@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -30,7 +31,18 @@ $RECYCLE.BIN/
 Icon 
 # Thumbnails
 ._*
+=======
+*.class
+target/*
 
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+>>>>>>> 1c3e67c65d76a310b8f5ce808b21a83d501cc4a3
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
