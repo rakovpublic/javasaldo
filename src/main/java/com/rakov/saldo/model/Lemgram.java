@@ -5,11 +5,29 @@ import com.mongodb.DBObject;
 
 public class Lemgram {
 	private String sense;
+	private String senseLable;
+	public String getSenseLable() {
+		return senseLable;
+	}
+
+	public void setSenseLable(String senseLable) {
+		this.senseLable = senseLable;
+	}
+
 	private String mother;
 	private String father;
 	private String lemgram;
 	private String gf;
 	private String pos;
+	private String writtenForm;
+	public String getWrittenForm() {
+		return writtenForm;
+	}
+
+	public void setWrittenForm(String writtenForm) {
+		this.writtenForm = writtenForm;
+	}
+
 	private String paradigm;
 	private String form;
 	private String msd;
