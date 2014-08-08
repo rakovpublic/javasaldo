@@ -15,8 +15,8 @@ import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 
 public class LemgramDaoImpl implements LemgramDAO {
-	private static DBCollection lemgramCollection= MongoDBUtils.getDBCollection();
-
+	private static DBCollection lemgramCollection = MongoDBUtils
+			.getDBCollection();
 
 	@Override
 	public List<Lemgram> getLemgramByName(String lemgram1) {

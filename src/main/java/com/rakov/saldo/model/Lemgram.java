@@ -6,6 +6,7 @@ import com.mongodb.DBObject;
 public class Lemgram {
 	private String sense;
 	private String senseLable;
+
 	public String getSenseLable() {
 		return senseLable;
 	}
@@ -14,12 +15,13 @@ public class Lemgram {
 		this.senseLable = senseLable;
 	}
 
-	private String mother;
+	
 	private String father;
 	private String lemgram;
 	private String gf;
 	private String pos;
 	private String writtenForm;
+
 	public String getWrittenForm() {
 		return writtenForm;
 	}
@@ -40,13 +42,6 @@ public class Lemgram {
 		this.sense = sense;
 	}
 
-	public String getMother() {
-		return mother;
-	}
-
-	public void setMother(String mother) {
-		this.mother = mother;
-	}
 
 	public String getFather() {
 		return father;
@@ -109,7 +104,8 @@ public class Lemgram {
 		BasicDBObject document = new BasicDBObject();
 
 		document.put("sense", sense);
-		document.put("mother", mother);
+		document.put("senselable", senseLable);
+		document.put("writtenform", writtenForm);
 		document.put("father", father);
 		document.put("lemgram", lemgram);
 		document.put("gf", gf);
@@ -125,7 +121,8 @@ public class Lemgram {
 		Lemgram b = new Lemgram();
 
 		b.setSense((String) document.get("sense"));
-		b.setMother((String) document.get("mother"));
+		b.setWrittenForm((String) document.get("writtenform"));
+		b.setSenseLable((String) document.get("senselable"));
 		b.setLemgram((String) document.get("lemgram"));
 		b.setGf((String) document.get("gf"));
 		b.setPos((String) document.get("pos"));
