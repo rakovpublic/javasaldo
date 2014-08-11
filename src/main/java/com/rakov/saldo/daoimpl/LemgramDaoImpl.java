@@ -1,6 +1,6 @@
 package com.rakov.saldo.daoimpl;
 
-import java.net.UnknownHostException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,11 +8,10 @@ import com.rakov.saldo.dao.LemgramDAO;
 import com.rakov.saldo.model.Lemgram;
 import com.rakov.saldo.mongodbutils.MongoDBUtils;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
+
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.Mongo;
+
 
 public class LemgramDaoImpl implements LemgramDAO {
 	private static DBCollection lemgramCollection = MongoDBUtils
