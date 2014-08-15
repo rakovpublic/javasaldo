@@ -13,9 +13,10 @@ import com.rakov.saldo.model.Lemgram;
 public class XMLParserSaldom extends DefaultHandler {
 	private HashMap<String, ArrayList<Lemgram>> saldo = new HashMap<String, ArrayList<Lemgram>>();
 	private HashMap<String, ArrayList<Lemgram>> result = new HashMap<String, ArrayList<Lemgram>>();
-	private List<Lemgram> tLems;
+	private List<Lemgram> tLems=new ArrayList<Lemgram>();
 
 	private ArrayList<Lemgram> tempList;
+
 	private boolean existFlag = false;
 	private boolean formRepFlag = false;
 
@@ -29,10 +30,7 @@ public class XMLParserSaldom extends DefaultHandler {
 			break;
 		case "FormRepresentation":
 			formRepFlag = true;
-			existFlag = saldo.containsKey(attributes.getValue("lemgram"));
-			if (existFlag) {
-				tLems = saldo.get(attributes.getValue("lemgram"));
-			}
+			
 			break;
 		case "feat":
 			switch (attributes.getValue("att")) {
@@ -40,45 +38,34 @@ public class XMLParserSaldom extends DefaultHandler {
 				existFlag = saldo.containsKey(attributes.getValue("val"));
 				if (existFlag) {
 					tLems = saldo.get(attributes.getValue("val"));
+					tempList = new ArrayList<Lemgram>();
+					tempList.clear();
+					
 				}
 				break;
 			case ("writtenForm"):
 				if (!formRepFlag) {
 					for (int i = 0; i < tLems.size(); i++) {
-						Lemgram lem = tLems.get(i);
+						Lemgram lem =  new Lemgram(tLems.get(i));
 						lem.setForm(attributes.getValue("val"));
-
 						tempList.add(lem);
 					}
 				}
 				break;
 			case ("msd"):
 				for (int i = 0; i < tempList.size(); i++) {
-					Lemgram lem = tempList.get(i);
-
-					lem.setMsd(attributes.getValue("val"));
+					Lemgram lem1 = new Lemgram(tempList.get(i)); 
+					if(lem1.getMsd()==null){
+					lem1.setMsd(attributes.getValue("val"));
 					tempList.remove(i);
-					tempList.add(i, lem);
-				}
-				if (result.containsKey(tempList.get(0).getLemgram())) {
-					ArrayList<Lemgram> t = result.get(tempList.get(0)
-							.getLemgram());
-					t.addAll(tempList);
-					result.remove(tempList.get(0).getLemgram());
-					result.put(tempList.get(0).getLemgram(), t);
-				} else {
-					result.put(tempList.get(0).getLemgram(), tempList);
+					tempList.add(i, lem1);
+					}
 				}
 				break;
 
 			}
 			break;
-		case "WordForm":
-			if (existFlag) {
-				tempList = new ArrayList<Lemgram>();
-			}
 
-			break;
 		}
 
 	}
@@ -98,7 +85,12 @@ public class XMLParserSaldom extends DefaultHandler {
 		case "FormRepresentation":
 			formRepFlag = false;
 			break;
+		case "LexicalEntry":
+			result.put(tempList.get(0).getLemgram(), tempList);
+			
+			break;
 		}
+		
 
 	}
 

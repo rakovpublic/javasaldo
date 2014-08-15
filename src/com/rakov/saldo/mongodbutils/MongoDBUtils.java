@@ -37,7 +37,7 @@ public class MongoDBUtils {
 				XMLParser handler = new XMLParser();
 			    try {
 					parser = parserFactor.newSAXParser();
-					parser.parse(ClassLoader.getSystemResourceAsStream("src/main/resources/saldo.xml"), handler);
+					parser.parse(ClassLoader.getSystemResourceAsStream("saldo.xml"), handler);
 				} catch (ParserConfigurationException e) {
 					System.out.println(e.toString());
 					e.printStackTrace();
@@ -54,7 +54,7 @@ public class MongoDBUtils {
 				handlerSaldom.setSaldo(handler.getSaldo());
 				try {
 					parserSaldom =parserFactorSaldom.newSAXParser();
-					parserSaldom.parse(ClassLoader.getSystemResourceAsStream("src/main/resources/saldom.xml"), handlerSaldom);
+					parserSaldom.parse(ClassLoader.getSystemResourceAsStream("saldom.xml"), handlerSaldom);
 				} catch (ParserConfigurationException e) {
 					System.out.println(e.toString());
 					e.printStackTrace();
@@ -66,10 +66,10 @@ public class MongoDBUtils {
 					e.printStackTrace();
 				}
 				HashMap<String, ArrayList<Lemgram>> result =handlerSaldom.getResult();
-				String [] keys= (String[]) result.keySet().toArray();
+				Object [] keys=  result.keySet().toArray();
 				for(int i=0;i<keys.length;i++)
 				{
-					ArrayList<Lemgram> lems =result.get(keys[i]);
+					ArrayList<Lemgram> lems =result.get((String)keys[i]);
 					for(int j=0;j<lems.size();j++){
 						lemgramCollection.insert(lems.get(j).toDBObject());
 					}
