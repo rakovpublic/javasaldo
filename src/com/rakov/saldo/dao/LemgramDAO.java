@@ -1,5 +1,6 @@
 package com.rakov.saldo.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.rakov.saldo.model.Lemgram;
@@ -12,6 +13,6 @@ public interface LemgramDAO {
 
 	public List<Lemgram> getLemgramByGf(String gf);
 
-	public List<Lemgram> getSense(String sense);
+	public ArrayList<Lemgram> getSense(String sense);
 
 }

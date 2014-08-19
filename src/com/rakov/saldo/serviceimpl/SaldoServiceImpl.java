@@ -24,38 +24,14 @@ public class SaldoServiceImpl implements SaldoService {
 	private List<String> prefix_searched = new ArrayList<String>();
 	private List<String> suffix_searched = new ArrayList<String>();
 	private LemgramDAO lemDAO = new LemgramDaoImpl();
-	private static HashMap<String, String> posMap =new HashMap<String, String>();
-	static{
+	private static HashMap<String, String> posMap = new HashMap<String, String>();
+	static {
 		posMap.put("nn", "nn");
 		posMap.put("vb", "vb");
 		posMap.put("av", "av");
 		posMap.put("ab", "ab");
 	}
-	/*
-	 * 
-	 * RE_WORD = re.compile(
-	 * ur'([a-zA-ZåäöéüÅÄÖÉÜ0-9]+-)*[a-zA-ZåäöéüÅÄÖÉÜ]+(:[a-zA-Z]+)?$') RE_DASH
-	 * = re.compile(ur'-+')
-	 * 
-	 * 
- def split(self, word, pos):
-        is_not_word = Splitter.RE_WORD.match(word) is None
-        parts = Splitter.RE_DASH.split(word)
-        if len(parts) >= self.max_parts: return None
-        elif len(parts) >= 2:
-            if self._has_suffix(parts[-1], pos):
-                if u"" in parts: return None
-                return [parts]
-            if is_not_word: return None
-            segs = self.analyze(parts[-1], pos, False)
-            if segs is None: return [parts]
-            else: return [parts[:-1] + seg for seg in segs]
-        elif len(parts) == 1:
-            if is_not_word: return None
-            return self.analyze(word, pos)
-        else: return None
 
-	 */
 	private Pattern reWord = Pattern
 			.compile("([a-zA-ZåäöéüÅÄÖÉÜ0-9]+-)*[a-zA-ZåäöéüÅÄÖÉÜ]+(:[a-zA-Z]+)?$");
 	private Pattern reDash = Pattern.compile("-+");
@@ -69,16 +45,15 @@ public class SaldoServiceImpl implements SaldoService {
 		} else {
 			if (parts.length >= 2) {
 				if (this.hasSuffix(parts[0], pos)) {
-					for(int j=0;j<parts.length;j++){
-						if(parts[j]=="")
-						{
+					for (int j = 0; j < parts.length; j++) {
+						if (parts[j] == "") {
 							return null;
 						}
 					}
 					return parts;
 				}
 				if (!isNotWord) {
-					System.out.println("Oopops");
+
 					return null;
 				}
 				List<String> segs = new ArrayList<String>();
@@ -88,55 +63,32 @@ public class SaldoServiceImpl implements SaldoService {
 				}
 				if (segs.isEmpty()) {
 					return null;
-				}
-				else{
-					for(int i=0;i<parts.length&&i<segs.size();i++)
-					{
-						parts[i]+=segs.get(i);
+				} else {
+					for (int i = 0; i < parts.length && i < segs.size(); i++) {
+						parts[i] += segs.get(i);
 					}
 					return parts;
 				}
-				
+
 			}
 			if (parts.length == 1) {
 				if (!isNotWord) {
 					return null;
 				}
 				List<String> segs1 = this.analyze(word, pos, false);
-				String res [] = new String[segs1.size()];
-				for(int i=0;i<segs1.size();i++)
-				{
-					res[i]=segs1.get(i);
+				String res[] = new String[segs1.size()];
+				for (int i = 0; i < segs1.size(); i++) {
+					res[i] = segs1.get(i);
 				}
 				return res;
 			} else {
 				return null;
 			}
 		}
-		
+
 	}
-/*
- def _has_prefix(self, prefix, initial):
-        if prefix in self.prefix_searched:
-            if prefix in self.prefix_c: return True
-            if initial and (prefix in self.prefix_ci): return True
-            if (not initial) and (prefix in self.prefix_cm): return True
-        found = False
-        for lemgram_id, pos, msd in \
-        self.saldo.db_get_lemgrams_pos_msd_by_form(prefix):
-            tags = msd.split()
-            if 'c' in tags:
-                self.prefix_c[prefix].add(lemgram_id)
-                found = True
-            elif 'ci' in tags:
-                self.prefix_ci[prefix].add(lemgram_id)
-                if initial: found = True
-            elif 'cm' in tags:
-                self.prefix_cm[prefix].add(lemgram_id)
-                if not initial: found = True
-        self.prefix_searched.add(prefix)
-        return found
-*/
+
+
 	private boolean hasPrefix(String prefix, boolean initial) {
 
 		for (int i = 0; i < prefix_searched.size(); i++) {
@@ -155,48 +107,35 @@ public class SaldoServiceImpl implements SaldoService {
 		boolean prefixSerched = false;
 		List<Lemgram> lems = lemDAO.getLemgramByForm(prefix);
 		for (int j = 0; j < lems.size(); j++) {
-			String [] tags=lems.get(j).getMsd().split(" ");
-			for(int i=0;i<tags.length;i++){
-			if (tags[i].equals("c")) {
-				prefixSerched = true;
-				prefix_c.put(prefix, lems.get(j).getLemgram());
-			}
-			if (tags[i].equals("ci")) {
-				prefix_ci.put(prefix, lems.get(j).getLemgram());
-				if (initial) {
+			String[] tags = lems.get(j).getMsd().split(" ");
+			for (int i = 0; i < tags.length; i++) {
+				if (tags[i].equals("c")) {
 					prefixSerched = true;
+					prefix_c.put(prefix, lems.get(j).getLemgram());
+				}
+				if (tags[i].equals("ci")) {
+					prefix_ci.put(prefix, lems.get(j).getLemgram());
+					if (initial) {
+						prefixSerched = true;
 
+					}
+				}
+				if (tags[i].equals("cm")) {
+					prefix_cm.put(prefix, lems.get(j).getLemgram());
+					if (!initial) {
+						prefixSerched = true;
+
+					}
 				}
 			}
-			if (tags[i].equals("cm")) {
-				prefix_cm.put(prefix, lems.get(j).getLemgram());
-				if (!initial) {
-					prefixSerched = true;
-
-				}
-			}
-		}
 
 		}
 		prefix_searched.add(prefix);
 		return prefixSerched;
 
 	}
-/*
- def _has_suffix(self, suffix, pos):
-        if suffix in self.suffix_searched:
-            if suffix in self.suffix[pos]: return True
 
-        found = False
-        for lemgram_id,_,saldo_pos,_ in self.saldo.get_lemgrams_by_gf(suffix):
-            suc_pos = Splitter.POS_MAP.get(saldo_pos)
-            if suc_pos is None: continue
-            self.suffix[suc_pos][suffix].add(lemgram_id)
-            if suc_pos == pos: found = True
-        self.suffix_searched.add(suffix)
-        return found
-
-*/
+	
 	private boolean hasSuffix(String suffix, String pos) {
 		for (int i = 0; i < suffix_searched.size(); i++) {
 			if (suffix.equals(suffix_searched.get(i))) {
@@ -209,24 +148,23 @@ public class SaldoServiceImpl implements SaldoService {
 		List<Lemgram> lems = lemDAO.getLemgramByGf(suffix);
 		for (int j = 0; j < lems.size(); j++) {
 			String suc_pos = posMap.get(lems.get(j).getPos().toLowerCase());
-			if(suc_pos!=null){
-			HashMap<String, String> temp=new HashMap<String, String>();
-			if (this.suffix.containsKey(suc_pos)) {
-				 temp = this.suffix.get(suc_pos);
+			if (suc_pos != null) {
+				HashMap<String, String> temp = new HashMap<String, String>();
+				if (this.suffix.containsKey(suc_pos)) {
+					temp = this.suffix.get(suc_pos);
+				}
+				if (!temp.isEmpty()) {
+					temp.put(suffix, lems.get(j).getLemgram());
+					this.suffix.put(suc_pos, temp);
+				} else {
+					HashMap<String, String> temp1 = new HashMap<String, String>();
+					temp1.put(suffix, lems.get(j).getLemgram());
+					this.suffix.put(suc_pos, temp1);
+				}
+				if (pos.equals(suc_pos)) {
+					prefixSerched = true;
+				}
 			}
-			if (!temp.isEmpty()) {
-				temp.put(suffix, lems.get(j).getLemgram());
-				this.suffix.put(suc_pos, temp);
-			} else {
-				HashMap<String, String> temp1 = new HashMap<String, String>();
-				temp1.put(suffix, lems.get(j).getLemgram());
-				this.suffix.put(suc_pos, temp1);
-			}
-			if (pos.equals(suc_pos)) {
-				prefixSerched = true;
-			}
-			}
-
 
 		}
 		this.suffix_searched.add(suffix);
@@ -235,74 +173,14 @@ public class SaldoServiceImpl implements SaldoService {
 
 	}
 
-	/*
- def analyze(self, word, pos, initial=True):
-        ends_at = [[] for _ in range(len(word)+1)]
-        len_at = [None] * (len(word)+1)
-        len_at[0] = 0
-        # Try to find candidates for the initial and middle segments
-        for j in range(self.min_seg, len(word)-self.min_seg+1):
-            # First try the initial segment (the word itself is
-            # compound-initial, as indicated by _initial_, otherwise this is
-            # a middle segment)
-            seg = word[:j]
-            if self._has_prefix(seg, initial):
-                ends_at[j].append((0, j, seg))
-                len_at[j] = 1
-            # Then try segments starting at position i
-            for i in range(self.min_seg, j-self.min_seg+1):
-                if ends_at[i] == []: continue
-                seg = word[i:j]
-                if self._has_prefix(seg, False):
-                    ends_at[j].append((i, j, seg))
-                    if len_at[j] is None or len_at[j] > 1+len_at[i]:
-                        len_at[j] = 1+len_at[i]
-                # Does this segment start with a doubled letter?
-                if not (word[i-2] == word[i-1]): continue
-                # If so, do the same thing as above, except 
-                seg = word[i-1] + seg
-                if self._has_prefix(seg, False):
-                    ends_at[j].append((i, j, seg))
-                    if len_at[j] is None or len_at[j] > 1+len_at[i]:
-                        len_at[j] = 1+len_at[i]
-        # Try to find candidates for the final segment
-        j = len(word)
-        for i in range(self.min_seg, len(word)-self.min_seg+1):
-            if ends_at[i] == []: continue
-            seg = word[i:]
-            if self._has_suffix(seg, pos):
-                ends_at[j].append((i, j, seg))
-                if len_at[j] is None or len_at[j] > 1+len_at[i]:
-                    len_at[j] = 1+len_at[i]
-            # Does this segment start with a doubled letter?
-            if not (word[i-2] == word[i-1]): continue
-            seg = word[i-1] + seg
-            # If so, do the same thing as above, except 
-            if self._has_suffix(seg, pos):
-                ends_at[j].append((i, j, seg))
-                if len_at[j] is None or len_at[j] > 1+len_at[i]:
-                    len_at[j] = 1+len_at[i]
-        if ends_at[j] == []: return None
-        if len_at[j] > 4: return None
-        found = []
-        Splitter.combine(found, ends_at, j, [], len_at[j])
-        return found
-
-	 */
 	private List<String> analyze(String word, String pos, boolean initial) {
 
 		HashMap<Integer, ArrayList<ServiceSupportModel>> endsAt = new HashMap<Integer, ArrayList<ServiceSupportModel>>();
-		int[] lenAt = new int[word.length()+1];//len_at = [None] * (len(word)+1)
-		for (int k = 0; k < lenAt.length; k++) {
-			lenAt[k] = -1;
-		}
-		lenAt[0] = 0;
-
-		for (int i = min_seg-1; i < word.length() - min_seg; i++)
-		{
+		int[] lenAt = new int[word.length() + 1];
+		for (int i = min_seg; i < word.length() - min_seg + 1; i++) {
 			String seg = word.substring(0, i);
 			if (hasPrefix(seg, initial)) {
-				ServiceSupportModel mod = new ServiceSupportModel();
+				ServiceSupportModel mod = new ServiceSupportModel(0, 0, "");
 				mod.setI(0);
 				mod.setJ(i);
 				mod.setSeg(seg);
@@ -318,11 +196,12 @@ public class SaldoServiceImpl implements SaldoService {
 
 				lenAt[i] = 1;
 			}
-			for (int j = min_seg-1; j < i - min_seg; j++) {
+			for (int j = min_seg; j < i - min_seg + 1; j++) {
 				if (endsAt.containsKey(j)) {
 					seg = word.substring(j, i);
 					if (hasPrefix(seg, false)) {
-						ServiceSupportModel mod1 = new ServiceSupportModel();
+						ServiceSupportModel mod1 = new ServiceSupportModel(0,
+								0, "");
 						mod1.setI(j);
 						mod1.setJ(i);
 						mod1.setSeg(seg);
@@ -335,14 +214,15 @@ public class SaldoServiceImpl implements SaldoService {
 							temp.add(mod1);
 							endsAt.put(i, temp);
 						}
-						if (lenAt[i] == -1 || lenAt[i] > 1 + lenAt[j]) {
+						if (lenAt[i] == 0 || lenAt[i] > 1 + lenAt[j]) {
 							lenAt[i] = 1 + lenAt[j];
 						}
 					}
-					if (word.charAt(i) == word.charAt(j)) {
+					if (word.charAt(j - 2) == word.charAt(j - 1)) {
 						seg = word.charAt(j - 1) + seg;
 						if (hasPrefix(seg, false)) {
-							ServiceSupportModel mod1 = new ServiceSupportModel();
+							ServiceSupportModel mod1 = new ServiceSupportModel(
+									0, 0, "");
 							mod1.setI(j);
 							mod1.setJ(i);
 							mod1.setSeg(seg);
@@ -356,7 +236,7 @@ public class SaldoServiceImpl implements SaldoService {
 								temp.add(mod1);
 								endsAt.put(i, temp);
 							}
-							if (lenAt[i] == -1 || lenAt[i] > 1 + lenAt[j]) {
+							if (lenAt[i] == 0 || lenAt[i] > 1 + lenAt[j]) {
 								lenAt[i] = 1 + lenAt[j];
 							}
 						}
@@ -366,17 +246,18 @@ public class SaldoServiceImpl implements SaldoService {
 			}
 
 		}
-		int j = word.length()-1;
-		for (int i = min_seg-1; i < j - min_seg; i++) {
+		int j = word.length();
+
+		for (int i = min_seg; i < j - min_seg + 1; i++) {
 			if (endsAt.containsKey(i)) {
 				String seg = word.substring(i, j);
 				if (hasSuffix(seg, pos)) {
-					ServiceSupportModel mod1 = new ServiceSupportModel();
+					ServiceSupportModel mod1 = new ServiceSupportModel(0, 0, "");
 					mod1.setI(i);
 					mod1.setJ(j);
 					mod1.setSeg(seg);
 					if (endsAt.containsKey(j)) {
-						ArrayList<ServiceSupportModel> temp = endsAt.get(i);
+						ArrayList<ServiceSupportModel> temp = endsAt.get(j);
 						temp.add(mod1);
 						endsAt.put(j, temp);
 					} else {
@@ -384,27 +265,28 @@ public class SaldoServiceImpl implements SaldoService {
 						temp.add(mod1);
 						endsAt.put(j, temp);
 					}
-					if (lenAt[j] == -1 || lenAt[j] > 1 + lenAt[i]) {
+					if (lenAt[j] == 0 || lenAt[j] > 1 + lenAt[i]) {
 						lenAt[j] = 1 + lenAt[i];
 					}
 				}
-				if (word.charAt(j) == word.charAt(i)) {
+				if (word.charAt(i - 2) == word.charAt(i - 1)) {
 					seg = word.charAt(i - 1) + seg;
 					if (hasSuffix(seg, pos)) {
-						ServiceSupportModel mod1 = new ServiceSupportModel();
-						mod1.setI(i);
-						mod1.setJ(j);
-						mod1.setSeg(seg);
+						ServiceSupportModel mod2 = new ServiceSupportModel(0,
+								0, "");
+						mod2.setI(i);
+						mod2.setJ(j);
+						mod2.setSeg(seg);
 						if (endsAt.containsKey(j)) {
-							ArrayList<ServiceSupportModel> temp = endsAt.get(i);
-							temp.add(mod1);
+							ArrayList<ServiceSupportModel> temp = endsAt.get(j);
+							temp.add(mod2);
 							endsAt.put(j, temp);
 						} else {
 							ArrayList<ServiceSupportModel> temp = new ArrayList<ServiceSupportModel>();
-							temp.add(mod1);
+							temp.add(mod2);
 							endsAt.put(j, temp);
 						}
-						if (lenAt[j] == -1 || lenAt[j] > 1 + lenAt[i]) {
+						if (lenAt[j] == 0 || lenAt[j] > 1 + lenAt[i]) {
 							lenAt[j] = 1 + lenAt[i];
 						}
 					}
@@ -424,19 +306,20 @@ public class SaldoServiceImpl implements SaldoService {
 
 	}
 
-	
 	private static void combine(List<String> strBuf, int j,
 			HashMap<Integer, ArrayList<ServiceSupportModel>> endsAt1,
 			int lenAtJ, String history) {
 		if (lenAtJ <= 0) {
 			return;
 		}
-		for (int i = 0; i < endsAt1.get(j).size(); i++) 
-		{
-			if (endsAt1.get(j).get(i).getJ() == 0) {
-				strBuf.add(endsAt1.get(j).get(i).getSeg() + history);
+		for (int i = 0; i < endsAt1.get(j).size(); i++) {
+			if (endsAt1.get(j).get(i).getI() == 0) {
+
+				strBuf.add(endsAt1.get(j).get(i).getSeg());
+				strBuf.add(history);
+
 			} else {
-				combine(strBuf, endsAt1.get(j).get(i).getJ(), endsAt1,
+				combine(strBuf, endsAt1.get(j).get(i).getI(), endsAt1,
 						lenAtJ - 1, endsAt1.get(j).get(i).getSeg() + history);
 			}
 
@@ -444,115 +327,55 @@ public class SaldoServiceImpl implements SaldoService {
 
 	}
 
-	/*
-	 def get_ancestors(lemgram_ids):
-            senses = set()
-            for lemgram_id in lemgram_ids:
-                if lemgram_id is None: continue
-                senses |= set([
-                    sense[0] for sense in
-                    self.saldo.get_senses_by_lemgram(lemgram_id)])
-            ancestors = set()
-            for sense_id in senses:
-                ancestors |= set(self.saldo.get_ancestors(sense_id, 2))
-            return ancestors | senses
-
-
-	 */
-	private HashMap<String, List<Lemgram>> getAncestors(String lemgram) {
-		List<Lemgram> senses = new ArrayList<Lemgram>();
-		List<Lemgram> ancestors = new ArrayList<Lemgram>();
-		List<Lemgram> lems = new ArrayList<Lemgram>();
-		lems = lemDAO.getLemgramByName(lemgram);
-		for (int i = 0; i < lems.size(); i++) {
-			senses.addAll(lemDAO.getSense(lems.get(i).getSense()));
-		}
-		for(int j=0;j<senses.size();j++){
-			ancestors.addAll(this.getAncestors(senses.get(j), 2));
-		}
-		
-		HashMap<String, List<Lemgram>> result = new HashMap<String, List<Lemgram>>();
-		result.put("senses", senses);
-		result.put("ancestors", ancestors);
-		return result;
-
-	}
-	//TODO: ask about it
-	/*
-	 *  def get_ancestors(self, sense_id, levels=1000):
-        if sense_id == 'PRIM..1': return set()
-        if levels <= 0: return set()
-        _, primary, secondary, lemgrams = self.get_sense(sense_id)
-        ancestors = set(secondary) if primary == 'PRIM..1' else \
-                    set((primary,) + secondary)
-        if levels == 1: return ancestors
-        ancestors |= self.get_ancestors(primary, levels-1)
-        for s in secondary: ancestors |= self.get_ancestors(s, levels-1)
-        return ancestors*/
-	private List<Lemgram> getAncestors(Lemgram lem, int level)
-	{
-		List<Lemgram> res= new ArrayList<Lemgram>();
-		if(level<=0){
-		return res;
-		}
-		res=lemDAO.getSense(lem.getSense());
-		if(level==1)
-		{
-			return res;
-		}
-		
-		return res;
-		
-	}
-/*
- * 
-    def is_semantic_compound(self, word, segs, pos):
-        if not self._has_suffix(word, pos): return None
-
-      
-        word_ancestors = get_ancestors(
-            [lemgram[0] for lemgram in self.saldo.get_lemgrams_by_form(word)])
-
-        # TODO: make this more efficient by checking as we go
-        seg_ancestors = get_ancestors(
-            self.prefix_c.get(segs[0], set()) |
-            self.prefix_ci.get(segs[0], set()))
-        for middle in segs[1:-1]:
-            seg_ancestors |= get_ancestors(
-                self.prefix_c.get(middle, set()) |
-                self.prefix_cm.get(middle, set()))
-        seg_ancestors |= get_ancestors(
-            self.suffix[pos].get(segs[-1], set()))
-
-        #print self.prefix_c.get(segs[0], set())
-        #print self.prefix_ci.get(segs[0], set())
-        #print self.suffix[pos].get(segs[-1], set())
-        #print 'ancestors of ', word.encode('utf-8')
-        #print seg_ancestors, word_ancestors
-
-        return len(seg_ancestors & word_ancestors) > 0
-*/
 	@Override
-	public boolean isSemanticCompound(String word, String [] segs, String pos) {
-      if(!hasSuffix(word, pos)){
-		return false;
+	public HashMap<Boolean, HashMap<String, ArrayList<Lemgram>>> isSemanticCompound(String word, String[] segs, String pos) {
+	
+		boolean result = hasSuffix(word, pos);
+		List<Lemgram> tempWordAncestor = lemDAO.getLemgramByForm(word);
+		HashMap<String, ArrayList<Lemgram>> analyzeResult = new HashMap<String, ArrayList<Lemgram>>();
+
+		for (int i = 0; i < tempWordAncestor.size(); i++) {
+			if (analyzeResult.containsKey("wordAncestors")) {
+				ArrayList<Lemgram> t = analyzeResult.get("wordAncestors");
+				ArrayList<Lemgram> temp = lemDAO.getSense(tempWordAncestor.get(i).getSense());
+				for (int j = 0; j < temp.size(); j++) {
+					if (!t.contains(temp.get(j))) {
+						t.add(temp.get(j));
+					}
+				}
+				analyzeResult.remove("wordAncestors");
+				analyzeResult.put("wordAncestors", t);
+
+			} else {
+				ArrayList<Lemgram> t = new ArrayList<Lemgram>();
+				ArrayList<Lemgram> temp = lemDAO.getSense(tempWordAncestor.get(i).getSense());
+				for (int j = 0; j < temp.size(); j++) {
+					if (!t.contains(temp.get(j))) {
+						t.add(temp.get(j));
+						
+					}
+
+				}
+				analyzeResult.put("wordAncestors", t);
+			}
 		}
-      
-      List<Lemgram> tempWordAncestor =lemDAO.getLemgramByForm(word);
-      List<Lemgram> wordAncestors= new ArrayList<Lemgram>();
-      for(int i=0;i<tempWordAncestor.size();i++){
-    	  HashMap<String, List<Lemgram>> t=getAncestors(tempWordAncestor.get(i).getLemgram());
-    	  wordAncestors.addAll(t.get("ancestors"));
-      }
-      List<Lemgram> segAncestors= new ArrayList<Lemgram>();
-      for(int j=0;j<segs.length;j++)
-      {
-    	  segAncestors.addAll(getAncestors(prefix_c.get(segs[j])).get("ancestors"));
-    	  segAncestors.addAll(getAncestors(prefix_cm.get(segs[j])).get("ancestors"));
-      }
-      segAncestors.addAll(getAncestors(prefix_ci.get(segs[0])).get("ancestors"));
-      segAncestors.addAll(getAncestors(suffix.get(pos).get(segs[segs.length-1])).get("ancestors"));
-	return  wordAncestors.size()>0&&segAncestors.size()>0;
+		ArrayList<Lemgram> segAncestors = new ArrayList<Lemgram>();
+		for (int j = 0; j < segs.length; j++) {
+			List<Lemgram> tempSegAncestor = lemDAO.getLemgramByForm(segs[j]);
+			for (int i = 0; i < tempSegAncestor.size(); i++) {
+				ArrayList<Lemgram> temp = lemDAO.getSense(tempSegAncestor
+						.get(i).getSense());
+				for (int k = 0; k < temp.size(); k++) {
+					if (!segAncestors.contains(temp.get(k))) {
+						segAncestors.add(temp.get(k));
+					}
+				}
+			}
+		}
+		analyzeResult.put("segAncestors", segAncestors);
+		HashMap<Boolean ,HashMap<String, ArrayList<Lemgram>>> fResult=new HashMap<Boolean,HashMap<String, ArrayList<Lemgram>>>();
+		fResult.put(result, analyzeResult);
+		return fResult;
 	}
 
 }

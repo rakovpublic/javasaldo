@@ -66,9 +66,9 @@ public class LemgramDaoImpl implements LemgramDAO {
 	}
 
 	@Override
-	public List<Lemgram> getSense(String sense) {
+	public ArrayList<Lemgram> getSense(String sense) {
 		BasicDBObject query = new BasicDBObject("sense", sense);
-		List<Lemgram> result = new ArrayList<Lemgram>();
+		ArrayList<Lemgram> result = new ArrayList<Lemgram>();
 		DBCursor temp = lemgramCollection.find(query);
 		try {
 			while (temp.hasNext()) {
