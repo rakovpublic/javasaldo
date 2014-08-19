@@ -67,6 +67,10 @@ public class MongoDBUtils {
 				}
 				HashMap<String, ArrayList<Lemgram>> result =handlerSaldom.getResult();
 				Object [] keys=  result.keySet().toArray();
+				lemgramCollection.ensureIndex("lemgram");
+				lemgramCollection.ensureIndex("sense");
+				lemgramCollection.ensureIndex("gf");
+				lemgramCollection.ensureIndex("form");
 				for(int i=0;i<keys.length;i++)
 				{
 					ArrayList<Lemgram> lems =result.get((String)keys[i]);
