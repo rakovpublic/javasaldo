@@ -1,14 +1,19 @@
 package com.rakov.saldo.serviceimpl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 import com.rakov.saldo.dao.LemgramDAO;
 import com.rakov.saldo.daoimpl.LemgramDaoImpl;
 import com.rakov.saldo.model.Lemgram;
+import com.rakov.saldo.model.SemanticCompoundSupport;
 import com.rakov.saldo.model.ServiceSupportModel;
 import com.rakov.saldo.service.SaldoService;
 
@@ -37,9 +42,10 @@ public class SaldoServiceImpl implements SaldoService {
 	private Pattern reDash = Pattern.compile("-+");
 
 	@Override
-	public String[] split(String word, String pos) {
-		boolean isNotWord = reWord.matcher(word).matches();
+	public HashMap<Integer,String[]> split(String word, String pos) {
+		boolean isNotWord = true;//reWord.matcher(word).matches();
 		String parts[] = reDash.split(word);
+		HashMap<Integer,String[]> res=new HashMap<Integer,String[]>();
 		if (parts.length >= max_parts) {
 			return null;
 		} else {
@@ -50,14 +56,17 @@ public class SaldoServiceImpl implements SaldoService {
 							return null;
 						}
 					}
-					return parts;
+					
+					int num = res.keySet().size();
+					res.put(num, parts);
+					return res;
 				}
 				if (!isNotWord) {
 
 					return null;
 				}
-				List<String> segs = new ArrayList<String>();
-				segs = this.analyze(word, pos, false);
+				//List<String> segs = new ArrayList<String>();
+				HashMap<Integer,String[]> segs = this.analyze(word, pos, false);
 				if (segs == null) {
 					return null;
 				}
@@ -67,7 +76,9 @@ public class SaldoServiceImpl implements SaldoService {
 					for (int i = 0; i < parts.length && i < segs.size(); i++) {
 						parts[i] += segs.get(i);
 					}
-					return parts;
+					int num = res.keySet().size();
+					res.put(num, parts);
+					return res;
 				}
 
 			}
@@ -75,12 +86,8 @@ public class SaldoServiceImpl implements SaldoService {
 				if (!isNotWord) {
 					return null;
 				}
-				List<String> segs1 = this.analyze(word, pos, false);
-				String res[] = new String[segs1.size()];
-				for (int i = 0; i < segs1.size(); i++) {
-					res[i] = segs1.get(i);
-				}
-				return res;
+				
+				return this.analyze(word, pos, false);
 			} else {
 				return null;
 			}
@@ -173,7 +180,7 @@ public class SaldoServiceImpl implements SaldoService {
 
 	}
 
-	private List<String> analyze(String word, String pos, boolean initial) {
+	private HashMap<Integer,String[]> analyze(String word, String pos, boolean initial) {
 
 		HashMap<Integer, ArrayList<ServiceSupportModel>> endsAt = new HashMap<Integer, ArrayList<ServiceSupportModel>>();
 		int[] lenAt = new int[word.length() + 1];
@@ -300,13 +307,13 @@ public class SaldoServiceImpl implements SaldoService {
 		if (lenAt[j] > 4) {
 			return null;
 		}
-		List<String> strBuf = new ArrayList<String>();
+		HashMap<Integer,String[]> strBuf =new HashMap<Integer,String[]>();
 		SaldoServiceImpl.combine(strBuf, j, endsAt, lenAt[j], "");
 		return strBuf;
 
 	}
 
-	private static void combine(List<String> strBuf, int j,
+	private static void combine(HashMap<Integer,String[]> strBuf, int j,
 			HashMap<Integer, ArrayList<ServiceSupportModel>> endsAt1,
 			int lenAtJ, String history) {
 		if (lenAtJ <= 0) {
@@ -314,9 +321,11 @@ public class SaldoServiceImpl implements SaldoService {
 		}
 		for (int i = 0; i < endsAt1.get(j).size(); i++) {
 			if (endsAt1.get(j).get(i).getI() == 0) {
-
-				strBuf.add(endsAt1.get(j).get(i).getSeg());
-				strBuf.add(history);
+                String []temp= new  String [2];
+				temp[0]=(endsAt1.get(j).get(i).getSeg());
+				temp[1]=(history);
+				int num = strBuf.keySet().size();
+				strBuf.put(num, temp);
 
 			} else {
 				combine(strBuf, endsAt1.get(j).get(i).getI(), endsAt1,
@@ -328,54 +337,50 @@ public class SaldoServiceImpl implements SaldoService {
 	}
 
 	@Override
-	public HashMap<Boolean, HashMap<String, ArrayList<Lemgram>>> isSemanticCompound(String word, String[] segs, String pos) {
+	public List<SemanticCompoundSupport> isSemanticCompound( HashMap<Integer, String[]> sRes, String pos, String word) {
+		List<SemanticCompoundSupport>result = new ArrayList<SemanticCompoundSupport>();
+		for(int i=0;i<sRes.size();i++)
+		{
+			SemanticCompoundSupport sup= new SemanticCompoundSupport();
+			sup.setParts(sRes.get(i));
+		
+			boolean res = hasSuffix(word, pos);
+			List<Lemgram> tempWordAncestors =  lemDAO.getLemgramByForm(word);
+			HashSet<Lemgram> wordAncestors= this.getAncestors(tempWordAncestors);
+			List<Lemgram>tempSegAncestors= new ArrayList<Lemgram>();
+			for(int j=0; j<sup.getParts().length;j++ ){
+				tempSegAncestors.addAll(lemDAO.getLemgramByForm(sup.getParts()[j]));
+				}
+			HashSet<Lemgram> segAncestors= this.getAncestors(tempSegAncestors);
+			sup.setFlagIsComp(((wordAncestors.size()&segAncestors.size())>0)&res);
+			result.add(sup);
+			
+		}
+
+
+
+		return result;
 	
-		boolean result = hasSuffix(word, pos);
-		List<Lemgram> tempWordAncestor = lemDAO.getLemgramByForm(word);
-		HashMap<String, ArrayList<Lemgram>> analyzeResult = new HashMap<String, ArrayList<Lemgram>>();
-
-		for (int i = 0; i < tempWordAncestor.size(); i++) {
-			if (analyzeResult.containsKey("wordAncestors")) {
-				ArrayList<Lemgram> t = analyzeResult.get("wordAncestors");
-				ArrayList<Lemgram> temp = lemDAO.getSense(tempWordAncestor.get(i).getSense());
-				for (int j = 0; j < temp.size(); j++) {
-					if (!t.contains(temp.get(j))) {
-						t.add(temp.get(j));
-					}
-				}
-				analyzeResult.remove("wordAncestors");
-				analyzeResult.put("wordAncestors", t);
-
-			} else {
-				ArrayList<Lemgram> t = new ArrayList<Lemgram>();
-				ArrayList<Lemgram> temp = lemDAO.getSense(tempWordAncestor.get(i).getSense());
-				for (int j = 0; j < temp.size(); j++) {
-					if (!t.contains(temp.get(j))) {
-						t.add(temp.get(j));
-						
-					}
-
-				}
-				analyzeResult.put("wordAncestors", t);
-			}
+	}
+	private HashSet<Lemgram>getAncestors(List<Lemgram> lem)
+	{
+		HashSet<Lemgram> senses= new HashSet<Lemgram>();
+		for(int i=0; i< lem.size(); i++){
+			senses.addAll(lemDAO.getLemgramByName(lem.get(i).getLemgram()));
+			
 		}
-		ArrayList<Lemgram> segAncestors = new ArrayList<Lemgram>();
-		for (int j = 0; j < segs.length; j++) {
-			List<Lemgram> tempSegAncestor = lemDAO.getLemgramByForm(segs[j]);
-			for (int i = 0; i < tempSegAncestor.size(); i++) {
-				ArrayList<Lemgram> temp = lemDAO.getSense(tempSegAncestor
-						.get(i).getSense());
-				for (int k = 0; k < temp.size(); k++) {
-					if (!segAncestors.contains(temp.get(k))) {
-						segAncestors.add(temp.get(k));
-					}
-				}
-			}
+		/*possible bug place*/
+		HashSet<Lemgram> ancestors= new HashSet<Lemgram>();
+		for(int i=0; i< lem.size(); i++){
+			ancestors.addAll(lemDAO.getSense(lem.get(i).getSense()));
+			
 		}
-		analyzeResult.put("segAncestors", segAncestors);
-		HashMap<Boolean ,HashMap<String, ArrayList<Lemgram>>> fResult=new HashMap<Boolean,HashMap<String, ArrayList<Lemgram>>>();
-		fResult.put(result, analyzeResult);
-		return fResult;
+		HashSet<Lemgram> result= new HashSet<Lemgram>();
+		result.addAll(ancestors);
+		result.addAll(senses);
+		
+		return result;
+		
 	}
 
 }
