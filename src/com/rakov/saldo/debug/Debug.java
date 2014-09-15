@@ -19,13 +19,13 @@ public class Debug {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//kändisgala
+		//kändisgala glasskål
 		/*LemgramDAO lemd= new LemgramDaoImpl();
-		List<Lemgram> llem= lemd.getLemgramByForm("glasskål");
+		List<Lemgram> llem= lemd.getSense("glas..1");
 		for(int i=0;i<llem.size();i++){
 			System.out.println(llem.get(i).toString());
-		}
-		System.out.println("End of job");*/
+		}*/
+		System.out.println("End of job");
 		SaldoService saldServ= new SaldoServiceImpl();//ä
 		HashMap<Integer,String[]> res= new HashMap<Integer,String[]>();
 		res=saldServ.split("glasskål", "nn");

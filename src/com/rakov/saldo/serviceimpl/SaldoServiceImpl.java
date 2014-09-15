@@ -37,13 +37,12 @@ public class SaldoServiceImpl implements SaldoService {
 		posMap.put("ab", "ab");
 	}
 
-	private Pattern reWord = Pattern
-			.compile("([a-zA-ZåäöéüÅÄÖÉÜ0-9]+-)*[a-zA-ZåäöéüÅÄÖÉÜ]+(:[a-zA-Z]+)?$");
+	private Pattern reWord = Pattern.compile("([a-zA-ZåäöéüÅÄÖÉÜ0-9]+-)*[a-zA-ZåäöéüÅÄÖÉÜ]+(:[a-zA-Z]+)?$",Pattern.UNICODE_CHARACTER_CLASS);
 	private Pattern reDash = Pattern.compile("-+");
 
 	@Override
 	public HashMap<Integer,String[]> split(String word, String pos) {
-		boolean isNotWord = true;//reWord.matcher(word).matches();
+		boolean isNotWord = reWord.matcher(word).matches();
 		String parts[] = reDash.split(word);
 		HashMap<Integer,String[]> res=new HashMap<Integer,String[]>();
 		if (parts.length >= max_parts) {
@@ -352,7 +351,28 @@ public class SaldoServiceImpl implements SaldoService {
 				tempSegAncestors.addAll(lemDAO.getLemgramByForm(sup.getParts()[j]));
 				}
 			HashSet<Lemgram> segAncestors= this.getAncestors(tempSegAncestors);
-			sup.setFlagIsComp(((wordAncestors.size()&segAncestors.size())>0)&res);
+			boolean resultq=false;
+			Iterator<Lemgram> iterWA=wordAncestors.iterator();
+			//System.out.println("word ancestors");
+			while (iterWA.hasNext()){
+				Lemgram lemwa=iterWA.next();
+				//System.out.println(lemwa);
+			if(!resultq)
+			{
+				
+				
+				if(segAncestors.contains(lemwa))
+				{
+					resultq=true;
+				}
+			}
+			}
+			/*Iterator<Lemgram> iterSA=segAncestors.iterator();
+			System.out.println("segs ancestors");
+			while (iterSA.hasNext()){ 
+			System.out.println(iterSA.next().toString());
+			}*/
+			sup.setFlagIsComp(resultq&res);
 			result.add(sup);
 			
 		}
@@ -374,6 +394,20 @@ public class SaldoServiceImpl implements SaldoService {
 		for(int i=0; i< lem.size(); i++){
 			ancestors.addAll(lemDAO.getSense(lem.get(i).getSense()));
 			
+		}
+		HashSet<Lemgram> tempSenses= new HashSet<Lemgram>();
+		HashSet<Lemgram> tempAnsestors= new HashSet<Lemgram>();
+		tempSenses.addAll(senses);
+		tempAnsestors.addAll(ancestors);
+		Iterator<Lemgram> iterSen=tempSenses.iterator();
+		Iterator<Lemgram> iterAnc=tempAnsestors.iterator();
+		while(iterSen.hasNext())
+		{
+			senses.addAll(lemDAO.getSense(iterSen.next().getFather()));
+		}
+		while(iterAnc.hasNext())
+		{
+			ancestors.addAll(lemDAO.getSense(iterAnc.next().getFather()));
 		}
 		HashSet<Lemgram> result= new HashSet<Lemgram>();
 		result.addAll(ancestors);

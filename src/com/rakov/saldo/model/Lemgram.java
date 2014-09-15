@@ -167,19 +167,8 @@ public class Lemgram {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((father == null) ? 0 : father.hashCode());
-		result = prime * result + ((form == null) ? 0 : form.hashCode());
-		result = prime * result + ((gf == null) ? 0 : gf.hashCode());
-		result = prime * result + ((lemgram == null) ? 0 : lemgram.hashCode());
-		result = prime * result + ((msd == null) ? 0 : msd.hashCode());
-		result = prime * result
-				+ ((paradigm == null) ? 0 : paradigm.hashCode());
-		result = prime * result + ((pos == null) ? 0 : pos.hashCode());
-		result = prime * result + ((sense == null) ? 0 : sense.hashCode());
-		result = prime * result
-				+ ((senseLable == null) ? 0 : senseLable.hashCode());
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -194,47 +183,9 @@ public class Lemgram {
 				return false;
 		} else if (!father.equals(other.father))
 			return false;
-		if (form == null) {
-			if (other.form != null)
-				return false;
-		} else if (!form.equals(other.form))
-			return false;
-		if (gf == null) {
-			if (other.gf != null)
-				return false;
-		} else if (!gf.equals(other.gf))
-			return false;
-		if (lemgram == null) {
-			if (other.lemgram != null)
-				return false;
-		} else if (!lemgram.equals(other.lemgram))
-			return false;
-		if (msd == null) {
-			if (other.msd != null)
-				return false;
-		} else if (!msd.equals(other.msd))
-			return false;
-		if (paradigm == null) {
-			if (other.paradigm != null)
-				return false;
-		} else if (!paradigm.equals(other.paradigm))
-			return false;
-		if (pos == null) {
-			if (other.pos != null)
-				return false;
-		} else if (!pos.equals(other.pos))
-			return false;
-		if (sense == null) {
-			if (other.sense != null)
-				return false;
-		} else if (!sense.equals(other.sense))
-			return false;
-		if (senseLable == null) {
-			if (other.senseLable != null)
-				return false;
-		} else if (!senseLable.equals(other.senseLable))
-			return false;
 		return true;
 	}
+
+	
 
 }
