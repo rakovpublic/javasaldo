@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -34,7 +33,7 @@ public class XMLParser extends DefaultHandler {
 			lem = new Lemgram();
 			break;
 		case "Sense":
-			finalLems=new ArrayList<Lemgram>();
+			finalLems = new ArrayList<Lemgram>();
 			for (int i = 0; i < tempLems.size(); i++) {
 				Lemgram tlem = new Lemgram(tempLems.get(i));
 				tlem.setSense(attributes.getValue("id"));
@@ -42,16 +41,16 @@ public class XMLParser extends DefaultHandler {
 				tempLems.add(i, tlem);
 			}
 			break;
-		
-		case "SenseRelation": 
-			  for (int k = 0; k < tempLems.size(); k++) {
-				  Lemgram ttlem = new Lemgram(tempLems.get(k));
-				 
-					  ttlem.setFather(attributes.getValue("targets"));
-					  finalLems.add(ttlem);
-				  
-				}
-			  break;
+
+		case "SenseRelation":
+			for (int k = 0; k < tempLems.size(); k++) {
+				Lemgram ttlem = new Lemgram(tempLems.get(k));
+
+				ttlem.setFather(attributes.getValue("targets"));
+				finalLems.add(ttlem);
+
+			}
+			break;
 		case "feat":
 			switch (attributes.getValue("att")) {
 			case "lemgram":
@@ -66,23 +65,24 @@ public class XMLParser extends DefaultHandler {
 			case "writtenForm":
 				lem.setGf(attributes.getValue("val"));
 				break;
-			
+
 			case "label":
 				for (int j = 0; j < finalLems.size(); j++) {
 					Lemgram flem = new Lemgram(finalLems.get(j));
-					if(flem.getSenseLable()==null){
-					flem.setSenseLable(attributes.getValue("val"));
-					if (saldo.containsKey(flem.getLemgram())) {
-						ArrayList<Lemgram> tempL = saldo.get(flem.getLemgram());
-						tempL.add(flem);
-						saldo.remove(flem.getLemgram());
-						saldo.put(flem.getLemgram(), tempL);
-					} else {
-						ArrayList<Lemgram> tempL = new ArrayList<Lemgram>();
-						tempL.add(flem);
-						saldo.put(flem.getLemgram(), tempL);
+					if (flem.getSenseLable() == null) {
+						flem.setSenseLable(attributes.getValue("val"));
+						if (saldo.containsKey(flem.getLemgram())) {
+							ArrayList<Lemgram> tempL = saldo.get(flem
+									.getLemgram());
+							tempL.add(flem);
+							saldo.remove(flem.getLemgram());
+							saldo.put(flem.getLemgram(), tempL);
+						} else {
+							ArrayList<Lemgram> tempL = new ArrayList<Lemgram>();
+							tempL.add(flem);
+							saldo.put(flem.getLemgram(), tempL);
 
-					}
+						}
 					}
 
 				}
@@ -91,7 +91,6 @@ public class XMLParser extends DefaultHandler {
 			}
 			break;
 
-		
 		}
 
 	}

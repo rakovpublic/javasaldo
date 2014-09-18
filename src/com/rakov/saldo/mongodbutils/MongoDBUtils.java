@@ -5,7 +5,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.Mongo;
@@ -33,11 +32,13 @@ public class MongoDBUtils {
 			if (lemgramCollection.count() == 0) {
 				lemgramCollection = db.createCollection("lemgrams", null);
 				SAXParserFactory parserFactor = SAXParserFactory.newInstance();
-				SAXParser parser=null;
+				SAXParser parser = null;
 				XMLParser handler = new XMLParser();
-			    try {
+				try {
 					parser = parserFactor.newSAXParser();
-					parser.parse(ClassLoader.getSystemResourceAsStream("saldo.xml"), handler);
+					parser.parse(
+							ClassLoader.getSystemResourceAsStream("saldo.xml"),
+							handler);
 				} catch (ParserConfigurationException e) {
 					System.out.println(e.toString());
 					e.printStackTrace();
@@ -48,13 +49,17 @@ public class MongoDBUtils {
 					System.out.println(e.toString());
 					e.printStackTrace();
 				}
-			    SAXParserFactory parserFactorSaldom = SAXParserFactory.newInstance();
-				SAXParser parserSaldom=null;
+				SAXParserFactory parserFactorSaldom = SAXParserFactory
+						.newInstance();
+				SAXParser parserSaldom = null;
 				XMLParserSaldom handlerSaldom = new XMLParserSaldom();
 				handlerSaldom.setSaldo(handler.getSaldo());
 				try {
-					parserSaldom =parserFactorSaldom.newSAXParser();
-					parserSaldom.parse(ClassLoader.getSystemResourceAsStream("saldom.xml"), handlerSaldom);
+					parserSaldom = parserFactorSaldom.newSAXParser();
+					parserSaldom
+							.parse(ClassLoader
+									.getSystemResourceAsStream("saldom.xml"),
+									handlerSaldom);
 				} catch (ParserConfigurationException e) {
 					System.out.println(e.toString());
 					e.printStackTrace();
@@ -65,16 +70,16 @@ public class MongoDBUtils {
 					System.out.println(e.toString());
 					e.printStackTrace();
 				}
-				HashMap<String, ArrayList<Lemgram>> result =handlerSaldom.getResult();
-				Object [] keys=  result.keySet().toArray();
+				HashMap<String, ArrayList<Lemgram>> result = handlerSaldom
+						.getResult();
+				Object[] keys = result.keySet().toArray();
 				lemgramCollection.ensureIndex("lemgram");
 				lemgramCollection.ensureIndex("sense");
 				lemgramCollection.ensureIndex("gf");
 				lemgramCollection.ensureIndex("form");
-				for(int i=0;i<keys.length;i++)
-				{
-					ArrayList<Lemgram> lems =result.get((String)keys[i]);
-					for(int j=0;j<lems.size();j++){
+				for (int i = 0; i < keys.length; i++) {
+					ArrayList<Lemgram> lems = result.get((String) keys[i]);
+					for (int j = 0; j < lems.size(); j++) {
 						lemgramCollection.insert(lems.get(j).toDBObject());
 					}
 				}

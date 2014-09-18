@@ -37,14 +37,16 @@ public class SaldoServiceImpl implements SaldoService {
 		posMap.put("ab", "ab");
 	}
 
-	private Pattern reWord = Pattern.compile("([a-zA-ZåäöéüÅÄÖÉÜ0-9]+-)*[a-zA-ZåäöéüÅÄÖÉÜ]+(:[a-zA-Z]+)?$",Pattern.UNICODE_CHARACTER_CLASS);
+	private Pattern reWord = Pattern.compile(
+			"([a-zA-ZåäöéüÅÄÖÉÜ0-9]+-)*[a-zA-ZåäöéüÅÄÖÉÜ]+(:[a-zA-Z]+)?$",
+			Pattern.UNICODE_CHARACTER_CLASS);
 	private Pattern reDash = Pattern.compile("-+");
 
 	@Override
-	public HashMap<Integer,String[]> split(String word, String pos) {
+	public HashMap<Integer, String[]> split(String word, String pos) {
 		boolean isNotWord = reWord.matcher(word).matches();
 		String parts[] = reDash.split(word);
-		HashMap<Integer,String[]> res=new HashMap<Integer,String[]>();
+		HashMap<Integer, String[]> res = new HashMap<Integer, String[]>();
 		if (parts.length >= max_parts) {
 			return null;
 		} else {
@@ -55,7 +57,7 @@ public class SaldoServiceImpl implements SaldoService {
 							return null;
 						}
 					}
-					
+
 					int num = res.keySet().size();
 					res.put(num, parts);
 					return res;
@@ -64,8 +66,9 @@ public class SaldoServiceImpl implements SaldoService {
 
 					return null;
 				}
-				//List<String> segs = new ArrayList<String>();
-				HashMap<Integer,String[]> segs = this.analyze(word, pos, false);
+				// List<String> segs = new ArrayList<String>();
+				HashMap<Integer, String[]> segs = this
+						.analyze(word, pos, false);
 				if (segs == null) {
 					return null;
 				}
@@ -85,7 +88,7 @@ public class SaldoServiceImpl implements SaldoService {
 				if (!isNotWord) {
 					return null;
 				}
-				
+
 				return this.analyze(word, pos, false);
 			} else {
 				return null;
@@ -93,7 +96,6 @@ public class SaldoServiceImpl implements SaldoService {
 		}
 
 	}
-
 
 	private boolean hasPrefix(String prefix, boolean initial) {
 
@@ -141,7 +143,6 @@ public class SaldoServiceImpl implements SaldoService {
 
 	}
 
-	
 	private boolean hasSuffix(String suffix, String pos) {
 		for (int i = 0; i < suffix_searched.size(); i++) {
 			if (suffix.equals(suffix_searched.get(i))) {
@@ -179,7 +180,8 @@ public class SaldoServiceImpl implements SaldoService {
 
 	}
 
-	private HashMap<Integer,String[]> analyze(String word, String pos, boolean initial) {
+	private HashMap<Integer, String[]> analyze(String word, String pos,
+			boolean initial) {
 
 		HashMap<Integer, ArrayList<ServiceSupportModel>> endsAt = new HashMap<Integer, ArrayList<ServiceSupportModel>>();
 		int[] lenAt = new int[word.length() + 1];
@@ -306,13 +308,13 @@ public class SaldoServiceImpl implements SaldoService {
 		if (lenAt[j] > 4) {
 			return null;
 		}
-		HashMap<Integer,String[]> strBuf =new HashMap<Integer,String[]>();
+		HashMap<Integer, String[]> strBuf = new HashMap<Integer, String[]>();
 		SaldoServiceImpl.combine(strBuf, j, endsAt, lenAt[j], "");
 		return strBuf;
 
 	}
 
-	private static void combine(HashMap<Integer,String[]> strBuf, int j,
+	private static void combine(HashMap<Integer, String[]> strBuf, int j,
 			HashMap<Integer, ArrayList<ServiceSupportModel>> endsAt1,
 			int lenAtJ, String history) {
 		if (lenAtJ <= 0) {
@@ -320,9 +322,9 @@ public class SaldoServiceImpl implements SaldoService {
 		}
 		for (int i = 0; i < endsAt1.get(j).size(); i++) {
 			if (endsAt1.get(j).get(i).getI() == 0) {
-                String []temp= new  String [2];
-				temp[0]=(endsAt1.get(j).get(i).getSeg());
-				temp[1]=(history);
+				String[] temp = new String[2];
+				temp[0] = (endsAt1.get(j).get(i).getSeg());
+				temp[1] = (history);
 				int num = strBuf.keySet().size();
 				strBuf.put(num, temp);
 
@@ -336,85 +338,84 @@ public class SaldoServiceImpl implements SaldoService {
 	}
 
 	@Override
-	public List<SemanticCompoundSupport> isSemanticCompound( HashMap<Integer, String[]> sRes, String pos, String word) {
-		List<SemanticCompoundSupport>result = new ArrayList<SemanticCompoundSupport>();
-		for(int i=0;i<sRes.size();i++)
-		{
-			SemanticCompoundSupport sup= new SemanticCompoundSupport();
-			sup.setParts(sRes.get(i));
-		
-			boolean res = hasSuffix(word, pos);
-			List<Lemgram> tempWordAncestors =  lemDAO.getLemgramByForm(word);
-			HashSet<Lemgram> wordAncestors= this.getAncestors(tempWordAncestors);
-			List<Lemgram>tempSegAncestors= new ArrayList<Lemgram>();
-			for(int j=0; j<sup.getParts().length;j++ ){
-				tempSegAncestors.addAll(lemDAO.getLemgramByForm(sup.getParts()[j]));
-				}
-			HashSet<Lemgram> segAncestors= this.getAncestors(tempSegAncestors);
-			boolean resultq=false;
-			Iterator<Lemgram> iterWA=wordAncestors.iterator();
-			//System.out.println("word ancestors");
-			while (iterWA.hasNext()){
-				Lemgram lemwa=iterWA.next();
-				//System.out.println(lemwa);
-			if(!resultq)
-			{
-				
-				
-				if(segAncestors.contains(lemwa))
-				{
-					resultq=true;
-				}
-			}
-			}
-			/*Iterator<Lemgram> iterSA=segAncestors.iterator();
-			System.out.println("segs ancestors");
-			while (iterSA.hasNext()){ 
-			System.out.println(iterSA.next().toString());
-			}*/
-			sup.setFlagIsComp(resultq&res);
-			result.add(sup);
-			
+	public List<SemanticCompoundSupport> isSemanticCompound(
+			HashMap<Integer, String[]> sRes, String pos, String word) {
+		List<SemanticCompoundSupport> result = new ArrayList<SemanticCompoundSupport>();
+
+		if (!hasSuffix(word, pos)) {
+			return null;
 		}
+		for (int i = 0; i < sRes.size(); i++) {
+			SemanticCompoundSupport sup = new SemanticCompoundSupport();
+			sup.setParts(sRes.get(i));
 
+			List<Lemgram> tempWordAncestors = lemDAO.getLemgramByForm(word);
+			HashSet<Lemgram> wordAncestors = this
+					.getAncestors(tempWordAncestors);
+			List<Lemgram> tempSegAncestors = new ArrayList<Lemgram>();
+			for (int j = 0; j < sup.getParts().length; j++) {
+				tempSegAncestors
+						.addAll(lemDAO.getLemgramByForm(sup.getParts()[j]));
+			}
+			HashSet<Lemgram> segAncestors = this.getAncestors(tempSegAncestors);
+			boolean resultq = false;
+			Iterator<Lemgram> iterWA = wordAncestors.iterator();
+			// System.out.println("word ancestors");
+			while (iterWA.hasNext()) {
+				Lemgram lemwa = iterWA.next();
+				// System.out.println(lemwa);
+				if (!resultq) {
 
+					if (segAncestors.contains(lemwa)) {
+						resultq = true;
+					}
+				}
+			}
+			/*
+			 * Iterator<Lemgram> iterSA=segAncestors.iterator();
+			 * System.out.println("segs ancestors"); while (iterSA.hasNext()){
+			 * System.out.println(iterSA.next().toString()); }
+			 */
+			sup.setFlagIsComp(resultq);
+
+			result.add(sup);
+
+		}
 
 		return result;
-	
+
 	}
-	private HashSet<Lemgram>getAncestors(List<Lemgram> lem)
-	{
-		HashSet<Lemgram> senses= new HashSet<Lemgram>();
-		for(int i=0; i< lem.size(); i++){
+
+	private HashSet<Lemgram> getAncestors(List<Lemgram> lem) {
+		HashSet<Lemgram> senses = new HashSet<Lemgram>();
+		for (int i = 0; i < lem.size(); i++) {
 			senses.addAll(lemDAO.getLemgramByName(lem.get(i).getLemgram()));
-			
+
 		}
-		/*possible bug place*/
-		HashSet<Lemgram> ancestors= new HashSet<Lemgram>();
-		for(int i=0; i< lem.size(); i++){
+
+		HashSet<Lemgram> ancestors = new HashSet<Lemgram>();
+		for (int i = 0; i < lem.size(); i++) {
 			ancestors.addAll(lemDAO.getSense(lem.get(i).getSense()));
-			
+
 		}
-		HashSet<Lemgram> tempSenses= new HashSet<Lemgram>();
-		HashSet<Lemgram> tempAnsestors= new HashSet<Lemgram>();
+		HashSet<Lemgram> tempSenses = new HashSet<Lemgram>();
+		HashSet<Lemgram> tempAnsestors = new HashSet<Lemgram>();
 		tempSenses.addAll(senses);
 		tempAnsestors.addAll(ancestors);
-		Iterator<Lemgram> iterSen=tempSenses.iterator();
-		Iterator<Lemgram> iterAnc=tempAnsestors.iterator();
-		while(iterSen.hasNext())
-		{
+		Iterator<Lemgram> iterSen = tempSenses.iterator();
+		Iterator<Lemgram> iterAnc = tempAnsestors.iterator();
+		while (iterSen.hasNext()) {
 			senses.addAll(lemDAO.getSense(iterSen.next().getFather()));
 		}
-		while(iterAnc.hasNext())
-		{
+		while (iterAnc.hasNext()) {
 			ancestors.addAll(lemDAO.getSense(iterAnc.next().getFather()));
 		}
-		HashSet<Lemgram> result= new HashSet<Lemgram>();
+		HashSet<Lemgram> result = new HashSet<Lemgram>();
 		result.addAll(ancestors);
 		result.addAll(senses);
-		
+
 		return result;
-		
+
 	}
 
 }

@@ -5,14 +5,15 @@ import com.mongodb.DBObject;
 
 public class Lemgram {
 	private String sense;
-	private String senseLable=null;
-	private String msd=null;
+	private String senseLable = null;
+	private String msd = null;
 	private String father;
 	private String lemgram;
 	private String gf;
 	private String pos;
 	private String paradigm;
 	private String form;
+
 	public Lemgram(Lemgram lem) {
 		super();
 		this.sense = lem.sense;
@@ -25,6 +26,7 @@ public class Lemgram {
 		this.form = lem.form;
 		this.msd = lem.msd;
 	}
+
 	public Lemgram() {
 		super();
 		this.sense = null;
@@ -39,8 +41,7 @@ public class Lemgram {
 	}
 
 	public String getSenseLable() {
-		if(senseLable==null)
-		{
+		if (senseLable == null) {
 			return null;
 		}
 		return senseLable;
@@ -57,7 +58,6 @@ public class Lemgram {
 	public void setSense(String sense) {
 		this.sense = sense;
 	}
-
 
 	public String getFather() {
 
@@ -109,8 +109,7 @@ public class Lemgram {
 	}
 
 	public String getMsd() {
-		if(msd==null)
-		{
+		if (msd == null) {
 			return null;
 		}
 		return msd;
@@ -126,7 +125,7 @@ public class Lemgram {
 
 		document.put("sense", sense);
 		document.put("senselable", senseLable);
-		
+
 		document.put("father", father);
 		document.put("lemgram", lemgram);
 		document.put("gf", gf);
@@ -158,8 +157,8 @@ public class Lemgram {
 	public String toString() {
 		return "Lemgram [sense=" + sense + ", senseLable=" + senseLable
 				+ ", father=" + father + ", lemgram=" + lemgram + ", gf=" + gf
-				+ ", pos=" + pos +  ", paradigm=" + paradigm + ", form=" + form + ", msd=" + msd
-				+ "]";
+				+ ", pos=" + pos + ", paradigm=" + paradigm + ", form=" + form
+				+ ", msd=" + msd + "]";
 	}
 
 	@Override
@@ -169,6 +168,7 @@ public class Lemgram {
 		result = prime * result + ((father == null) ? 0 : father.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -185,7 +185,5 @@ public class Lemgram {
 			return false;
 		return true;
 	}
-
-	
 
 }

@@ -19,38 +19,40 @@ public class Debug {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//kändisgala glasskål
-		/*LemgramDAO lemd= new LemgramDaoImpl();
-		List<Lemgram> llem= lemd.getSense("glas..1");
-		for(int i=0;i<llem.size();i++){
-			System.out.println(llem.get(i).toString());
-		}*/
+		// kändisgala glasskål
+		/*
+		 * LemgramDAO lemd= new LemgramDaoImpl(); List<Lemgram> llem=
+		 * lemd.getSense("glas..1"); for(int i=0;i<llem.size();i++){
+		 * System.out.println(llem.get(i).toString()); }
+		 */
 		System.out.println("End of job");
-		SaldoService saldServ= new SaldoServiceImpl();//ä
-		HashMap<Integer,String[]> res= new HashMap<Integer,String[]>();
-		res=saldServ.split("glasskål", "nn");
-		/*if(res!=null){
-		for(int i=0;i<res.size();i++){
-			String[] tres=res.get(i);
-			for(int j=0;j<tres.length;j++){
-				System.out.println(tres[j]);	
+		SaldoService saldServ = new SaldoServiceImpl();// ä
+		HashMap<Integer, String[]> res = new HashMap<Integer, String[]>();
+		res = saldServ.split("arbetsbiträde", "nn");
+		if (res != null) {
+			for (int i = 0; i < res.size(); i++) {
+				String[] tres = res.get(i);
+				for (int j = 0; j < tres.length; j++) {
+					System.out.println(tres[j]);
+				}
+
 			}
-			
-			
-		}}*/
-	    List<SemanticCompoundSupport>resSC= saldServ.isSemanticCompound(res, "nn", "glasskål");
-	    for(int i=0; i<resSC.size();i++)
-	    {
-	    	System.out.println(resSC.get(i).isFlagIsComp());
-	    	 String[] parts= resSC.get(i).getParts();
-	    	 for(int j=0; j<parts.length;j++)
-	    	 {
-	    		 System.out.println(parts[j]);
-	    	 }
-	    	 
-	    }
+		}
+		List<SemanticCompoundSupport> resSC = saldServ.isSemanticCompound(res,
+				"nn", "arbetsbiträde");
+		if (resSC == null) {
+			System.out.println("None");
+		} else {
+			for (int i = 0; i < resSC.size(); i++) {
+				System.out.println(resSC.get(i).isFlagIsComp());
+				String[] parts = resSC.get(i).getParts();
+				for (int j = 0; j < parts.length; j++) {
+					System.out.println(parts[j].toString());
+				}
+
+			}
+		}
 		System.out.println("End of job");
-		
 
 	}
 

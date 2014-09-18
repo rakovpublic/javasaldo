@@ -1,6 +1,5 @@
 package com.rakov.saldo.daoimpl;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +10,6 @@ import com.mongodb.BasicDBObject;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
-
 
 public class LemgramDaoImpl implements LemgramDAO {
 	private static DBCollection lemgramCollection = MongoDBUtils

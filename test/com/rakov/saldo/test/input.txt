@@ -1,0 +1,208 @@
+# glasskål
+[u'glas',u'skål']True
+[u'glass',u'kål']False
+[u'glass',u'skål']True
+# adams-äpple
+[u'adams',u'äpple']None
+# administrationskostnad
+[u'administrations', u'kostnad']None
+# adoptiv-barn
+[u'adoptiv',u'barn']None
+# adoptivförälder
+[u'adoptiv',u'förälder']True
+# advokatbyrå
+[u'advokat',u'byrå']True
+# affektionsvärde
+[u'affektions',u'värde']True
+# affärsbank
+[u'affärs',u'bank']True
+# affärsförbindelse
+[u'affärs',u'förbindelse']True
+# affärsförbindelse
+[u'affärs',u'förbindelse']True
+# affärsgata
+[u'affärs',u'gata']True
+# alkoholhalt
+[u'alkohol',u'halt']True
+# alkoholmissbruk
+[u'alkohol',u'missbruk']True
+# alkoholpoliklinik
+[u'alkohol',u'poliklinik']None
+# allmänbildning
+[u'allmän',u'bildning']True
+# allmängods
+[u'allmän',u'gods']True
+# andedräkt
+[u'ande',u'dräkt']False
+# andelslägenhet
+[u'andels',u'lägenhet']None
+# andningsorgan
+[u'andnings',u'organ']True
+# andrahandsaffär
+[u'andrahands',u'affär']None
+# andrahandslägenhet
+[u'andrahands',u'lägenhet']None
+# andrahandsvärde
+[u'andrahands',u'värde']True
+# anknytningsfall
+[u'anknytnings',u'fall']None
+# ansiktsuttryck
+[u'ansikts',u'uttryck']True
+# ansiktslyftning
+[u'ansikts',u'lyftning']True
+# anställningsskydd
+[u'anställnings',u'skydd']True
+# ansvarsfrihet
+[u'ansvars',u'frihet']True
+# antagandepoäng
+[u'antagande',u'poäng']None
+antihjälte
+[u'anti',u'hjälte']True
+# antiklimax
+[u'anti',u'klimax']True
+# antikropp
+[u'anti',u'kropp']True
+# antisemit
+[u'anti',u'semit']True
+användarnamn
+[u'användar',u'namn']None
+# aprilskämt
+[u'april',u'skämt']True
+aprilväder
+[u'april',u'väder']True
+# aptitretande
+[u'aptit',u'retande']None
+# jätteaptit
+[u'jätte',u'aptit']None
+# arbetarklass
+[u'arbetar',u'klass']True
+# arbetarparti
+[u'arbetar',u'parti']True
+# arbetarkommun
+[u'arbetar',u'kommun']False
+# arbetarrörelse
+[u'arbetar',u'rörelse']True
+# arbetarskydd
+[u'arbetar',u'skydd']True
+# a-bomb
+[u'a',u'bomb']True
+# arbetsdag
+[u'arbets',u'dag']True
+# arbetsförmåga
+[u'arbets',u'förmåga']True
+# arbetsförtjänst
+[u'arbets',u'förtjänst']True
+[u'arbetsför',u'tjänst']True
+# arbetsgrupp
+[u'arbets',u'grupp']True
+# arbetskamrat
+[u'arbets',u'kamrat']True
+# arbetsledare
+[u'arbets',u'ledare']True
+# arbetsliv
+[u'arbets',u'liv']True
+# arbetstakt
+[u'arbets',u'takt']True
+# arbetstid
+[u'arbets',u'tid']True
+# arbetsuppgift
+[u'arbets',u'uppgift']True
+# arbetskonflikt
+[u'arbets',u'konflikt']True
+# arbetslivserfarenhet
+[u'arbets',u'livserfarenhet']True
+[u'arbetslivs',u'erfarenhet']True
+# arbetslunch
+[u'arbets',u'lunch']None
+# arbetsmyra
+[u'arbets',u'myra']True
+# arbetsnarkoman
+[u'arbets',u'narkoman']False
+# arbetsrum
+[u'arbets',u'rum']True
+# arbetstvist
+[u'arbets',u'tvist']True
+# arbetsbiträde
+[u'arbets',u'biträde']None
+[u'arbetsbi',u'träde']None
+# arbetsförmedling
+[u'arbets',u'förmedling']True
+[u'arbetsför',u'medling']True
+# arbetsgivaravgift
+[u'arbetsgivar',u'avgift']True
+# arbetsgivare
+[u'arbets',u'givare']True
+# arbetslöshet
+[u'arbets',u'löshet']True
+# arbetslöshetsförsäkring
+[u'arbetslöshets',u'försäkring']True
+# arbetslöshetskassa
+[u'arbetslöshets',u'kassa']None
+# arbetsmarknad
+[u'arbets',u'marknad']True
+# arbetsmarknadsinstitut
+[u'arbetsmarknads',u'institut']None
+# arbetsmarknadsstöd
+[u'arbetsmarknads',u'stöd']None
+# arbetsnedläggelse
+[u'arbets',u'nedläggelse']True
+# arbetsprövning
+[u'arbets',u'prövning']None
+# arbetsskada
+[u'arbets',u'skada']True
+# arbetsstyrka
+[u'arbets',u'styrka']True
+# arbetsterapeut
+[u'arbets',u'terapeut']True
+# arbetsterapi
+[u'arbets',u'terapi']True
+# arbetstillstånd
+[u'arbets',u'tillstånd']True
+# arbetsträning
+[u'arbets',u'träning']True
+# arbetsvecka
+[u'arbets',u'vecka']True
+# arbetsvård
+[u'arbets',u'vård']True
+# arbetsvägledare
+[u'arbets',u'vägledare']None
+# arbetsvägledning
+[u'arbets',u'vägledning']None
+# armbåge
+[u'arm',u'båge']True
+# atomkärna
+[u'atom',u'kärna']True
+# atomteknik
+[u'atom',u'teknik']None
+# atombomb
+[u'atom',u'bomb']True
+# atomkraft
+[u'atom',u'kraft']True
+# atomvapen
+[u'atom',u'vapen']True
+# attachéväska
+[u'attaché',u'väska']True
+# automatlåda
+[u'automat',u'låda']None
+# avbeställningssedel
+[u'avbeställnings',u'sedel']None
+# avbetalningskontrakt
+[u'avbetalnings',u'kontrakt']None
+# avgasrening
+[u'avgas',u'rening']True
+# avgassystem
+[u'avgas',u'system']None
+# avgångsbidrag
+[u'avgångs',u'bidrag']True
+# avtalsförhandling
+[u'avtals',u'förhandling']True
+# avundsjuka
+[u'avund',u'sjuka']True
+# axelväska
+[u'axel',u'väska']None
+# axelklaff
+[u'axel',u'klaff']False
+# axelryckning
+[u'axel',u'ryckning']False
+# backspegel
+[u'back',u'spegel']True
