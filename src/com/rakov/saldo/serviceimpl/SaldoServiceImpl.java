@@ -43,7 +43,7 @@ public class SaldoServiceImpl implements SaldoService {
 	private Pattern reDash = Pattern.compile("-+");
 /*
  * This method returns null if cann't split this word or
- *  HashMap<Integer, String[]> where int is number of splits and string [] is split
+ *  HashMap<Integer, String[]> where int is number of split and string [] is split
  * @see com.rakov.saldo.service.SaldoService#split(java.lang.String, java.lang.String)
  */
 	@Override

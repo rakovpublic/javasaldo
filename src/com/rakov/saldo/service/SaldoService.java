@@ -9,9 +9,14 @@ import com.rakov.saldo.model.Lemgram;
 import com.rakov.saldo.model.SemanticCompoundSupport;
 
 public interface SaldoService {
+	/*
+	 * This method returns null if cann't split this word or
+	 *  HashMap<Integer, String[]> where int is number of split and string [] is split
+	 */
 	public HashMap<Integer, String[]> split(String word, String pos);
 
-	/* check if it right and rewrite if not */
-	List<SemanticCompoundSupport> isSemanticCompound(
+	/*This method returns null if cann't find full word in dictionary or boolean which shoes the quality of splits
+	 * */
+	public List<SemanticCompoundSupport> isSemanticCompound(
 			HashMap<Integer, String[]> sRes, String pos, String word);
 }
