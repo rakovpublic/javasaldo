@@ -41,7 +41,11 @@ public class SaldoServiceImpl implements SaldoService {
 			"([a-zA-ZåäöéüÅÄÖÉÜ0-9]+-)*[a-zA-ZåäöéüÅÄÖÉÜ]+(:[a-zA-Z]+)?$",
 			Pattern.UNICODE_CHARACTER_CLASS);
 	private Pattern reDash = Pattern.compile("-+");
-
+/*
+ * This method returns null if cann't split this word or
+ *  HashMap<Integer, String[]> where int is number of splits and string [] is split
+ * @see com.rakov.saldo.service.SaldoService#split(java.lang.String, java.lang.String)
+ */
 	@Override
 	public HashMap<Integer, String[]> split(String word, String pos) {
 		boolean isNotWord = reWord.matcher(word).matches();
@@ -336,7 +340,8 @@ public class SaldoServiceImpl implements SaldoService {
 		}
 
 	}
-
+/*This method returns null if cann't find full word in dictionary or boolean which shoes the quality of splits
+ * */
 	@Override
 	public List<SemanticCompoundSupport> isSemanticCompound(
 			HashMap<Integer, String[]> sRes, String pos, String word) {
