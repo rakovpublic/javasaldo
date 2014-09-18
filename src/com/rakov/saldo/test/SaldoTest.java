@@ -14,7 +14,7 @@ import com.rakov.saldo.serviceimpl.SaldoServiceImpl;
 public class SaldoTest {
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("input.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("/home/rakovskyi/git/javasaldo/src/com/rakov/saldo/test/input.txt"));
 		SaldoService saldServ = new SaldoServiceImpl();
 		HashMap<Integer, String[]> res = null;
 		int c = 0;
@@ -35,13 +35,26 @@ public class SaldoTest {
 				} else {
 					SemanticCompoundSupport result = null;
 					if (resSC != null) {
+						try{
 						result = resSC.get(c);
+						}
+						catch(IndexOutOfBoundsException e){
+							System.out.println(resSC.toString()+c+line);
+							
+						}
 					}
-					String input = line.replaceAll("[u'", "");
-					input = input.replaceAll("u'", "");
-					input = input.replaceAll("'", "");
-					String[] inputFlag = input.split("]");
-					switch (inputFlag[1]) {
+					String input = line.replaceAll("\\[u\\'", "");
+					input = input.replaceAll("u\\'", "");
+					input = input.replaceAll("\\'", "");
+					String[] inputFlag = input.split("\\]");
+					String tempStr=null;
+					try{
+						tempStr=inputFlag[1];
+					}
+					catch(ArrayIndexOutOfBoundsException e){
+						System.out.println(line);
+					}
+					switch (tempStr) {
 					case "None":
 						if (result == null&&res!=null) {
 							String []pythonParts=inputFlag[0].split(",");
@@ -56,7 +69,7 @@ public class SaldoTest {
 							if(r){
 								System.out.println("Ok");
 							}else{
-								System.out.println(result.toString() + line);
+								System.out.println(line);
 							}
 						} else {
 							System.out.println(result.toString() + line);

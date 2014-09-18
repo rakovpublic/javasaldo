@@ -2,8 +2,6 @@
 [u'glas',u'skål']True
 [u'glass',u'kål']False
 [u'glass',u'skål']True
-# adams-äpple
-[u'adams',u'äpple']None
 # administrationskostnad
 [u'administrations', u'kostnad']None
 # adoptiv-barn
@@ -56,7 +54,7 @@
 [u'ansvars',u'frihet']True
 # antagandepoäng
 [u'antagande',u'poäng']None
-antihjälte
+# antihjälte
 [u'anti',u'hjälte']True
 # antiklimax
 [u'anti',u'klimax']True
@@ -64,11 +62,11 @@ antihjälte
 [u'anti',u'kropp']True
 # antisemit
 [u'anti',u'semit']True
-användarnamn
+# användarnamn
 [u'användar',u'namn']None
 # aprilskämt
 [u'april',u'skämt']True
-aprilväder
+# aprilväder
 [u'april',u'väder']True
 # aptitretande
 [u'aptit',u'retande']None
@@ -130,10 +128,6 @@ aprilväder
 [u'arbetsför',u'medling']True
 # arbetsgivaravgift
 [u'arbetsgivar',u'avgift']True
-# arbetsgivare
-[u'arbets',u'givare']True
-# arbetslöshet
-[u'arbets',u'löshet']True
 # arbetslöshetsförsäkring
 [u'arbetslöshets',u'försäkring']True
 # arbetslöshetskassa
@@ -178,8 +172,6 @@ aprilväder
 [u'atom',u'bomb']True
 # atomkraft
 [u'atom',u'kraft']True
-# atomvapen
-[u'atom',u'vapen']True
 # attachéväska
 [u'attaché',u'väska']True
 # automatlåda
