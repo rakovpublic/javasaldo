@@ -14,120 +14,156 @@ import com.rakov.saldo.serviceimpl.SaldoServiceImpl;
 public class SaldoTest {
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("/home/rakovskyi/git/javasaldo/src/com/rakov/saldo/test/input.txt"));
+		BufferedReader br = new BufferedReader(new FileReader(
+				"/home/rakovskyi/workfile.txt"));
 		SaldoService saldServ = new SaldoServiceImpl();
 		HashMap<Integer, String[]> res = null;
 		int c = 0;
+		int errors=0;
+		int rights=0;
 		List<SemanticCompoundSupport> resSC = null;
 		try {
 
 			String line = br.readLine();
-
+			String word = null;
 			while (line != null) {
-				if (line.contains("#")) {
-					String[] tempStr = line.split(" ");
-					res = saldServ.split(tempStr[1], "nn");
-					if (res != null) {
-						resSC = saldServ.isSemanticCompound(res, "nn",
-								tempStr[1]);
-					}
+				if (line.contains("#1")) {
+					String[] tempStr = line.split("@");
+					word = tempStr[1];
 					c = 0;
 				} else {
-					SemanticCompoundSupport result = null;
-					if (resSC != null) {
-						try{
-						result = resSC.get(c);
+					if (line.contains("#2")) {
+						String[] tempStr = line.split("@");
+						if (word != null)
+							res = saldServ
+									.split(word, tempStr[1].toLowerCase());
+						if (res != null) {
+							resSC = saldServ.isSemanticCompound(res,
+									tempStr[1].toLowerCase(), word);
 						}
-						catch(IndexOutOfBoundsException e){
-							System.out.println(resSC.toString()+c+line);
+					} else {
+						SemanticCompoundSupport result = null;
+						if (resSC != null) {
+							try {
+								result = resSC.get(c);
+							} catch (IndexOutOfBoundsException e) {
+								System.out.println(resSC.toString() + c + line);
+
+							}
+						}
+						String input = line.replaceAll("\\[u\\'", "");
+						input = input.replaceAll("u\\'", "");
+						input = input.replaceAll("\\'", "");
+						input = input.replaceAll(" ", "");
+						String[] inputFlag = input.split("\\]");
+						String tempStr = null;
+						tempStr = inputFlag[1];
+						
+						switch (tempStr) {
+						case "None":
+							if (result == null && res != null) {
+								String[] pythonParts = inputFlag[0].split(",");
+								String[] javaParts = res.get(c);
+								boolean r = true;
+								for (int i = 0; i < javaParts.length; i++) {
+									if (r) {
+										r = pythonParts[i].equals(javaParts[i]);
+									}
+
+								}
+								if (r) {
+									System.out.println("Ok");
+									rights++;
+								} else {
+									System.out.println(word+line);
+									errors++;
+								}
+							} else {
+								System.out.println(word +" "+result.toString() + line);
+								errors++;
+							}
+							c++;
+							break;
+						case "True":
+							boolean result2=false;
+							try{
+								 result2= result.isFlagIsComp();
+							}
+							catch(NullPointerException e){
+								System.out.println("none"+line);
+							}
+							if (result2) {
+									String[] pythonParts = inputFlag[0]
+											.split(",");
+									String[] javaParts = result.getParts();
+									boolean r = true;
+									for (int i = 0; i < javaParts.length; i++) {
+										if (r) {
+											r = pythonParts[i]
+													.equals(javaParts[i]);
+										}
+
+									}
+									if (r) {
+										System.out.println("Ok");
+										rights++;
+									} else {
+										System.out.println(word +" "+result.toString()
+												+ line);
+										errors++;
+									}
+								} else {
+									System.out
+											.println("Error "+word+ line);
+									errors++;
+								}
 							
-						}
-					}
-					String input = line.replaceAll("\\[u\\'", "");
-					input = input.replaceAll("u\\'", "");
-					input = input.replaceAll("\\'", "");
-					String[] inputFlag = input.split("\\]");
-					String tempStr=null;
-					try{
-						tempStr=inputFlag[1];
-					}
-					catch(ArrayIndexOutOfBoundsException e){
-						System.out.println(line);
-					}
-					switch (tempStr) {
-					case "None":
-						if (result == null&&res!=null) {
-							String []pythonParts=inputFlag[0].split(",");
-							String []javaParts=res.get(c);
-							boolean r=true;
-							for(int i=0;i<javaParts.length;i++){
-								if(r){
-									r=pythonParts[i].equals(javaParts[i]);
-								}
-								
+							c++;
+							break;
+						case "False":
+							boolean result3=true;
+							try{
+								 result3= result.isFlagIsComp();
 							}
-							if(r){
-								System.out.println("Ok");
-							}else{
-								System.out.println(line);
+							catch(NullPointerException e){
+								System.out.println("none "+line);
 							}
-						} else {
-							System.out.println(result.toString() + line);
-						}
-						c++;
-						break;
-					case "True":
-						if (result.isFlagIsComp()) {
-							String []pythonParts=inputFlag[0].split(",");
-							String []javaParts=result.getParts();
-							boolean r=true;
-							for(int i=0;i<javaParts.length;i++){
-								if(r){
-									r=pythonParts[i].equals(javaParts[i]);
-								}
-								
-							}
-							if(r){
-								System.out.println("Ok");
-							}else{
-								System.out.println(result.toString() + line);
-							}
-						}else{
-							System.out.println(result.toString() + line);
-						}
-						c++;
-						break;
-					case "False":
-						if (!result.isFlagIsComp()) {
-							String []pythonParts=inputFlag[0].split(",");
-							String []javaParts=result.getParts();
-							boolean r=true;
-							for(int i=0;i<javaParts.length;i++){
-								if(r){
-									r=pythonParts[i].equals(javaParts[i]);
-								}
-								
-							}
-							if(r){
-								System.out.println("Ok");
-							}else{
-								System.out.println(result.toString() + line);
-							}
+							if (!result3) {
+								String[] pythonParts = inputFlag[0].split(",");
+								String[] javaParts = result.getParts();
+								boolean r = true;
+								for (int i = 0; i < javaParts.length; i++) {
+									if (r) {
+										r = pythonParts[i].equals(javaParts[i]);
+									}
 
-						}else{
-							System.out.println(result.toString() + line);
+								}
+								if (r) {
+									System.out.println("Ok");
+									rights++;
+								} else {
+									System.out
+											.println(word +" "+result.toString() + line);
+									errors++;
+								}
+
+							} else {
+								System.out.println("Error "+word+ line);
+								errors++;
+							}
+							c++;
+							break;
+
 						}
-						c++;
-						break;
 
 					}
-
 				}
 				line = br.readLine();
 
 			}
 
 		} finally {
+			System.out.println("Right results:" +rights+"Errors:"+errors);
 			br.close();
 		}
 	}

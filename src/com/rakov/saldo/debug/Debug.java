@@ -28,7 +28,7 @@ public class Debug {
 		System.out.println("End of job");
 		SaldoService saldServ = new SaldoServiceImpl();// ä
 		HashMap<Integer, String[]> res = new HashMap<Integer, String[]>();
-		res = saldServ.split("arbetsgivare", "nn");
+		res = saldServ.split("överdragskläder", "nn");
 		if (res != null) {
 			for (int i = 0; i < res.size(); i++) {
 				String[] tres = res.get(i);
@@ -39,7 +39,7 @@ public class Debug {
 			}
 		}
 		List<SemanticCompoundSupport> resSC = saldServ.isSemanticCompound(res,
-				"nn", "arbetsgivare");
+				"nn", "överdragskläder");
 		if (resSC == null) {
 			System.out.println("None");
 		} else {
